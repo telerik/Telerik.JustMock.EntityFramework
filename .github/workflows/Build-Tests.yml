@@ -1,0 +1,53 @@
+name: "Build and test .NET Framework"
+
+on:
+  workflow_call:
+    inputs:
+      build-number:
+        required: true
+        type: string
+      skip-tests:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+
+   build-and-test:
+    runs-on: windows-2022
+    permissions:
+      contents: write
+      checks: write # Required by dorny/test-reporter
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Build
+      run: |
+          dotnet build -c Release -f net472
+      shell: cmd
+
+    - name: Run tests
+      if: ${{ !inputs.skip-tests }}
+      run: |
+          dotnet test --no-build --no-restore -c Release -f net472 -l trx
+      shell: cmd
+
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: ${{ (success() || failure()) && !inputs.skip-tests }}
+      with:
+          name: "Tests Release"
+          path: ./**/TestResults/*.trx
+          reporter: dotnet-trx
+
+    - name: Cleanup test results
+      if: ${{ always() }}
+      run: |
+          del /s /q *.trx
+      shell: cmd
+
