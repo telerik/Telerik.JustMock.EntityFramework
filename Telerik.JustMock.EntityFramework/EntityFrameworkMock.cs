@@ -31,18 +31,25 @@ namespace Telerik.JustMock.EntityFramework
 		public static TDbContext PrepareMock<TDbContext>(TDbContext dbContext)
 		{
 			var type = dbContext.GetType();
-			var propQ = from prop in type.GetProperties()
-						let dbSetType = prop.PropertyType.ImplementsGenericInterface(typeof(IDbSet<>))
-						where dbSetType != null
-						let elementType = dbSetType.GetGenericArguments()[0]
-						let mockDbSetType = typeof(MockDbSet<>).MakeGenericType(elementType)
-						select new
+            var props =
+				type.GetProperties()
+				.Where(prop =>
+					prop.PropertyType.IsGenericInterfaceOfType(typeof(IDbSet<>))
+					|| prop.PropertyType.GetInterfaces().Any(intf => intf.IsGenericInterfaceOfType(typeof(IDbSet<>))))
+				.Select(prop =>
+					{
+                        var dbSetType = prop.PropertyType.GetGenericInterfaceOfType(typeof(IDbSet<>));
+						var elementType = dbSetType.GetGenericArguments()[0];
+						var mockDbSetType = typeof(MockDbSet<>).MakeGenericType(elementType);
+
+						return new
 						{
 							Property = prop,
 							ElementType = elementType,
 							Value = Mock.Create(mockDbSetType, Behavior.CallOriginal),
 						};
-			var props = propQ.ToArray();
+					})
+				.ToArray();
 
 			foreach (var prop in props)
 			{
