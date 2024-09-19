@@ -5,33 +5,33 @@ using System.Threading.Tasks;
 
 namespace Telerik.JustMock.EntityFramework
 {
-	internal class TestDbAsyncEnumerator<T> : IDbAsyncEnumerator<T>
-	{
-		private readonly IEnumerator<T> _inner;
+    internal class TestDbAsyncEnumerator<T> : IDbAsyncEnumerator<T>
+    {
+        private readonly IEnumerator<T> _inner;
 
-		public TestDbAsyncEnumerator(IEnumerator<T> inner)
-		{
-			_inner = inner;
-		}
+        public TestDbAsyncEnumerator(IEnumerator<T> inner)
+        {
+            _inner = inner;
+        }
 
-		public void Dispose()
-		{
-			_inner.Dispose();
-		}
+        public void Dispose()
+        {
+            _inner.Dispose();
+        }
 
-		public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
-		{
-			return Task.FromResult(_inner.MoveNext());
-		}
+        public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(_inner.MoveNext());
+        }
 
-		public T Current
-		{
-			get { return _inner.Current; }
-		}
+        public T Current
+        {
+            get { return _inner.Current; }
+        }
 
-		object IDbAsyncEnumerator.Current
-		{
-			get { return Current; }
-		}
-	}
+        object IDbAsyncEnumerator.Current
+        {
+            get { return Current; }
+        }
+    }
 }

@@ -1,6 +1,8 @@
 Telerik.JustMock.EntityFramework
 ====================
 
+[![CI](https://github.com/telerik/Telerik.JustMock.EntityFramework/actions/workflows/CI.yml/badge.svg)](https://github.com/telerik/Telerik.JustMock.EntityFramework/actions/workflows/CI.yml)
+
 In-memory mock DbSet and DbContext mocking amenities for JustMock.
 
 Getting Started
