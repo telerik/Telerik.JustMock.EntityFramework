@@ -26,11 +26,6 @@ jobs:
         fetch-depth: 0
         submodules: recursive
 
-    - name: Setup msbuild
-      uses: microsoft/setup-msbuild@v1.1
-      with:
-        msbuild-architecture: x86
-
     - name: Restore dependencies
       run: |
           dotnet restore --disable-parallel
