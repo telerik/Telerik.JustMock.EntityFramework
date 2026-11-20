@@ -16,12 +16,12 @@ jobs:
    build-and-test:
     runs-on: windows-2022
     permissions:
-      contents: write
+      contents: read
       checks: write # Required by dorny/test-reporter
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: recursive
@@ -48,7 +48,7 @@ jobs:
       shell: cmd
 
     - name: Publish test results
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2
       if: ${{ (success() || failure()) && !inputs.skip-tests }}
       with:
           name: "Tests Release"
